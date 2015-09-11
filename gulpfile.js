@@ -35,10 +35,10 @@ gulp.task('deploy:production', ['build:production'], function() {
 });
 
 gulp.task('deploy:development', ['build:development'], $.shell.task([
-  'cd .dist',
   'git init',
   'git add .',
   'git commit -m "init"',
   'git remote add origin git@github.com:advancedkiosks/dev-zamok-auth-hub.git',
-  'git push -u -f origin master'
-]));
+  'git checkout -b gh-pages',
+  'git push -u -f origin gh-pages'
+], { cwd: '.dist' }));
