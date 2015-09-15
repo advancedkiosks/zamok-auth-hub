@@ -54,7 +54,7 @@ var gitDeploy = function(env) {
     'git init',
     'git add .',
     'git commit -m "init"',
-    'git remote add origin ' + 'git@github.com:advancedkiosks/auth-hub-' + env + '.git',
+    'git remote add origin ' + 'git@github.com:advancedkiosks/zamok-auth-hub-' + env + '.git',
     'git checkout -b gh-pages',
     'git push -u -f origin gh-pages'
   ], { cwd: '.dist' })
