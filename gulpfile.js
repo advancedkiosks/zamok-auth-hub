@@ -6,14 +6,14 @@ var runSequence = require('run-sequence');
 
 gulp.task('clean', function() { return del('.dist') });
 
-gulp.task('build:development', ['clean'], function() {
+gulp.task('development:build', ['clean'], function() {
   return gulp.src('src/index.html')
              .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/dev.js')))
              .pipe($.smoosher())
              .pipe(gulp.dest('.dist'));
 });
 
-gulp.task('build:production:html', function() {
+gulp.task('production:build', ['clean'], function(cb) {
   return gulp.src('src/index.html')
              .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/prod.js')))
              .pipe($.smoosher())
@@ -30,23 +30,41 @@ gulp.task('build:production:html', function() {
              .pipe(gulp.dest('.dist'));
 });
 
-gulp.task('build:production:copy', function() {
-  return gulp.src('src/CNAME').pipe(gulp.dest('.dist'));
-});
+var cnameTask = function(env) {
+  gulp.task(env+':build:cname', function() {
+    return gulp.src('src/cname/' + env)
+               .pipe($.rename('CNAME'))
+               .pipe(gulp.dest('.dist'));
+  });
+}
+cnameTask('production');
+cnameTask('development');
+cnameTask('staging');
 
-gulp.task('build:production', ['clean'], function(cb) {
-  return runSequence(['build:production:html', 'build:production:copy'], cb);
-});
-
-gulp.task('deploy:production', ['build:production'], function() {
+gulp.task('production:deploy:gh', ['production:build:cname'], function() {
   return gulp.src('./.dist/**/*').pipe($.ghPages());
 });
 
-gulp.task('deploy:development', ['build:development'], $.shell.task([
-  'git init',
-  'git add .',
-  'git commit -m "init"',
-  'git remote add origin git@github.com:advancedkiosks/dev-zamok-auth-hub.git',
-  'git checkout -b gh-pages',
-  'git push -u -f origin gh-pages'
-], { cwd: '.dist' }));
+gulp.task('production:deploy', ['production:build'], function(cb) {
+  return runSequence('production:deploy:gh', cb);
+});
+
+var gitDeploy = function(env) {
+  return $.shell.task([
+    'git init',
+    'git add .',
+    'git commit -m "init"',
+    'git remote add origin ' + 'git@github.com:advancedkiosks/auth-hub-' + env + '.git',
+    'git checkout -b gh-pages',
+    'git push -u -f origin gh-pages'
+  ], { cwd: '.dist' })
+};
+
+var deployTo = function(env) {
+  return function(cb) {
+    runSequence(env + ':build:cname', gitDeploy(env));
+  };
+};
+
+gulp.task('staging:deploy', ['production:build'], deployTo('staging'));
+gulp.task('development:deploy', ['development:build'], deployTo('development'));

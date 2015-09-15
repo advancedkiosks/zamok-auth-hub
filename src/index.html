@@ -1,7 +1,8 @@
 <!doctype html>
 <head>
   <!-- smoosh -->
-  <script src="../bower_components/cross-storage/dist/hub.min.js"></script>
+  <script src="../bower_components/cross-storage/dist/hub.min.js">
+  </script>
   <!-- endsmoosh -->
 </head>
 <body>
@@ -9,7 +10,7 @@
     /* insert:origins */
     CrossStorageHub.init(origins.map(function(o) {
       return { origin: o, allow: ['get', 'set', 'del'] };
-    ));
+    }));
   </script>
 </body>
 </html>
