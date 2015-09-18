@@ -9,6 +9,10 @@ gulp.task('clean', function() { return del('.dist') });
 gulp.task('development:build', ['clean'], function() {
   return gulp.src('src/index.html')
              .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/dev.js')))
+             .pipe($.jshint.extract('always'))
+             .pipe($.jshint())
+             .pipe($.jshint.reporter('default'))
+             .pipe($.jshint.reporter('fail'))
              .pipe($.smoosher())
              .pipe(gulp.dest('.dist'));
 });
@@ -16,6 +20,10 @@ gulp.task('development:build', ['clean'], function() {
 gulp.task('production:build', ['clean'], function(cb) {
   return gulp.src('src/index.html')
              .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/prod.js')))
+             .pipe($.jshint.extract('always'))
+             .pipe($.jshint())
+             .pipe($.jshint.reporter('default'))
+             .pipe($.jshint.reporter('fail'))
              .pipe($.smoosher())
              .pipe($.htmlmin({
                collapseWhitespace: true,
