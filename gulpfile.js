@@ -6,9 +6,9 @@ var runSequence = require('run-sequence');
 
 gulp.task('clean', function() { return del('.dist') });
 
-gulp.task('development:build', ['clean'], function() {
+gulp.task('staging:build', ['clean'], function() {
   return gulp.src('src/index.html')
-             .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/dev.js')))
+             .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/staging.js')))
              .pipe($.jshint.extract('always'))
              .pipe($.jshint())
              .pipe($.jshint.reporter('default'))
@@ -19,7 +19,7 @@ gulp.task('development:build', ['clean'], function() {
 
 gulp.task('production:build', ['clean'], function(cb) {
   return gulp.src('src/index.html')
-             .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/prod.js')))
+             .pipe($.replace('/* insert:origins */', fs.readFileSync('./src/origins/production.js')))
              .pipe($.jshint.extract('always'))
              .pipe($.jshint())
              .pipe($.jshint.reporter('default'))
@@ -73,4 +73,4 @@ var deployTo = function(env) {
   };
 };
 
-gulp.task('staging:deploy', ['production:build'], deployTo('staging'));
+gulp.task('staging:deploy', ['staging:build'], deployTo('staging'));
