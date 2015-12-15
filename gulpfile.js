@@ -46,7 +46,6 @@ var cnameTask = function(env) {
   });
 }
 cnameTask('production');
-cnameTask('development');
 cnameTask('staging');
 
 gulp.task('production:deploy:gh', ['production:build:cname'], function() {
@@ -75,4 +74,3 @@ var deployTo = function(env) {
 };
 
 gulp.task('staging:deploy', ['production:build'], deployTo('staging'));
-gulp.task('development:deploy', ['development:build'], deployTo('development'));
