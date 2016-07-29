@@ -2,6 +2,6 @@
   "name": "zamok-auth-hub",
   "private": true,
   "dependencies": {
-    "cross-storage": "~0.8.0"
+    "cross-storage": "~0.8.2"
   }
 }

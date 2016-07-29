@@ -48,20 +48,17 @@ var cnameTask = function(env) {
 cnameTask('production');
 cnameTask('staging');
 
-gulp.task('production:deploy:gh', ['production:build:cname'], function() {
-  return gulp.src('./.dist/**/*').pipe($.ghPages());
-});
-
-gulp.task('production:deploy', ['production:build'], function(cb) {
-  return runSequence('production:deploy:gh', cb);
-});
 
 var gitDeploy = function(env) {
+  const origin = {
+    staging: 'git@github.com:advancedkiosks/zamok-auth-hub-staging.git',
+    production: 'git@github.com:advancedkiosks/zamok-auth-hub.git',
+  };
   return $.shell.task([
     'git init',
     'git add .',
     'git commit -m "init"',
-    'git remote add origin ' + 'git@github.com:advancedkiosks/zamok-auth-hub-' + env + '.git',
+    'git remote add origin ' + origin[env],
     'git checkout -b gh-pages',
     'git push -u -f origin gh-pages'
   ], { cwd: '.dist' })
@@ -73,4 +70,5 @@ var deployTo = function(env) {
   };
 };
 
+gulp.task('production:deploy', ['production:build'], deployTo('production'));
 gulp.task('staging:deploy', ['staging:build'], deployTo('staging'));

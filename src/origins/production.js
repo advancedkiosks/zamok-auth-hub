@@ -1,1 +1,1 @@
-var origins = [ /zamok2.com$/i ];
+var origins = [ /file:\/\//i, /zamok2.com$/i ];
